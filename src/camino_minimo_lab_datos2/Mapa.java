@@ -7,6 +7,7 @@ package camino_minimo_lab_datos2;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -33,6 +34,7 @@ public class Mapa extends javax.swing.JFrame {
     Funciones f;
     int numver = 0;
     Font fuente;
+    int Matrizad[][]= new int[99][99];
 
     /**
      * Creates new form Mapa
@@ -44,6 +46,7 @@ public class Mapa extends javax.swing.JFrame {
         g2 = img.getGraphics();
         g = (Graphics2D) g2;
         fuente = jLabel1.getFont();
+        FontMetrics fm = g.getFontMetrics();
         g.setFont(fuente);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -63,6 +66,7 @@ public class Mapa extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         aggorigen = new javax.swing.JComboBox<>();
         aggdestino = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -91,6 +95,13 @@ public class Mapa extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("Ejecutar Floyd-Warshall");
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,7 +114,9 @@ public class Mapa extends javax.swing.JFrame {
                 .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46)
                 .addComponent(jLabel1)
-                .addContainerGap(572, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addComponent(jLabel2)
+                .addContainerGap(390, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,7 +126,8 @@ public class Mapa extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(aggorigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addGap(23, 23, 23))
         );
 
@@ -147,16 +161,27 @@ public class Mapa extends javax.swing.JFrame {
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         Vertice origen = (Vertice) aggorigen.getSelectedItem();
         Vertice destino = (Vertice) aggdestino.getSelectedItem();
-        if (!origen.equals(destino)) {
+        int sw=0;
+        for (Arista ar : aristas) {
+            if (ar.destino.equals(destino) && ar.origen.equals(origen)) {
+                sw=1;
+            }
+        }
+        if (!origen.equals(destino) && sw==0) {
             String peso = JOptionPane.showInputDialog("Escriba el costo del camino");
             if (peso != null && !peso.isEmpty()) {
                 int costo = Integer.parseInt(peso);
                 Arista a = new Arista((Vertice) aggorigen.getSelectedItem(), (Vertice) aggdestino.getSelectedItem(), costo);
                 aristas.add(a);
                 f.Dibujar(g, vertices, aristas, r, fuente);
+                f.Aggady(origen, a, vertices);
             }
         }
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        f.Matrizad(vertices, Matrizad, numver);
+    }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -199,5 +224,6 @@ public class Mapa extends javax.swing.JFrame {
     private javax.swing.JComboBox<Vertice> aggorigen;
     private javax.swing.JPanel img;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

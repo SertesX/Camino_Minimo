@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Vertice {
     String nombre;
-    ArrayList listaady = new ArrayList();
+    ArrayList<Arista> listaady = new ArrayList();
     Hitbox hitbox;
     int numero;
     int x;
