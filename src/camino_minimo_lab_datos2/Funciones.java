@@ -18,6 +18,9 @@ import java.util.ArrayList;
 public class Funciones {
     
     public void Dibujar(Graphics g, ArrayList<Vertice> vertices, ArrayList<Arista> aristas, int r, Font fuente) {
+        g.setColor(Color.white);
+        g.fillRect(0, 0, 2000, 1000);
+        g.setColor(Color.black);
         FontMetrics fm = g.getFontMetrics();
         int largostring;
         for (Arista a : aristas) {
@@ -54,11 +57,11 @@ public class Funciones {
     }
     
     public void Matrizad(ArrayList<Vertice> vertices, int[][] M,int numver){
-        int i=0,j=0;
         for (int k = 0; k < numver; k++) {
             for (int l = 0; l < numver; l++) {
-                M[i][j]=0;
+                M[k][l]=9999;
             }
+            M[k][k]=0;
         }
         for (Vertice v : vertices) {
             for (Arista a : v.listaady) {
@@ -66,4 +69,6 @@ public class Funciones {
             }
         }
     }
+    
+    
 }

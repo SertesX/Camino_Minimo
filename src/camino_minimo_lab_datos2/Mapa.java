@@ -26,15 +26,19 @@ public class Mapa extends javax.swing.JFrame {
     ArrayList<Vertice> vertices = new ArrayList();
     ArrayList<Hitbox> hitboxes = new ArrayList();
     ArrayList<Arista> aristas = new ArrayList();
+    ArrayList<Arista> auxar = new ArrayList();
     DefaultComboBoxModel<Vertice> model = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model1 = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model2 = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model3 = new DefaultComboBoxModel();
+    DefaultComboBoxModel<Vertice> model4 = new DefaultComboBoxModel();
     int r = 20;
     Funciones f;
     int numver = 0;
     Font fuente;
-    int Matrizad[][]= new int[99][99];
+    int Matrizad[][] = new int[99][99];
+    int fwsw = 0;
+    FloydWarshall fw;
 
     /**
      * Creates new form Mapa
@@ -43,14 +47,18 @@ public class Mapa extends javax.swing.JFrame {
         initComponents();
         aggorigen.setModel(model);
         aggdestino.setModel(model1);
+        eliminar.setModel(model2);
+        origenfw.setModel(model3);
+        destinofw.setModel(model4);
         g2 = img.getGraphics();
         g = (Graphics2D) g2;
-        fuente = jLabel1.getFont();
+        fuente = aggcaminolbl.getFont();
         FontMetrics fm = g.getFontMetrics();
         g.setFont(fuente);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         f = new Funciones();
+        fw = new FloydWarshall();
     }
 
     /**
@@ -63,10 +71,19 @@ public class Mapa extends javax.swing.JFrame {
     private void initComponents() {
 
         img = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        aggcaminolbl = new javax.swing.JLabel();
         aggorigen = new javax.swing.JComboBox<>();
         aggdestino = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
+        ejecutarfwlbl = new javax.swing.JLabel();
+        elimverlbl = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        eliminar = new javax.swing.JComboBox<>();
+        caminominlbl = new javax.swing.JLabel();
+        origenfw = new javax.swing.JComboBox<>();
+        destinofw = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,19 +105,41 @@ public class Mapa extends javax.swing.JFrame {
             .addGap(0, 525, Short.MAX_VALUE)
         );
 
-        jLabel1.setText("Agregar Camino");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+        aggcaminolbl.setText("Agregar Camino");
+        aggcaminolbl.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
+                aggcaminolblMouseClicked(evt);
             }
         });
 
-        jLabel2.setText("Ejecutar Floyd-Warshall");
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+        ejecutarfwlbl.setText("Ejecutar Floyd-Warshall");
+        ejecutarfwlbl.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel2MouseClicked(evt);
+                ejecutarfwlblMouseClicked(evt);
             }
         });
+
+        elimverlbl.setText("Eliminar Vertice");
+        elimverlbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                elimverlblMouseClicked(evt);
+            }
+        });
+
+        jLabel4.setText("Origen");
+
+        jLabel5.setText("Destino");
+
+        caminominlbl.setText("Hallar Camino Minimo");
+        caminominlbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                caminominlblMouseClicked(evt);
+            }
+        });
+
+        jLabel7.setText("Origen");
+
+        jLabel8.setText("Destino");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -108,86 +147,209 @@ public class Mapa extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(aggorigen, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(jLabel1)
-                .addGap(68, 68, 68)
-                .addComponent(jLabel2)
-                .addContainerGap(390, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel4)
+                        .addGap(113, 113, 113)
+                        .addComponent(jLabel5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(aggorigen, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
+                        .addComponent(aggcaminolbl)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(origenfw, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(destinofw, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addComponent(elimverlbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(caminominlbl)
+                        .addGap(105, 105, 105))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(271, 271, 271)
+                        .addComponent(ejecutarfwlbl)
+                        .addGap(101, 101, 101)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                        .addComponent(jLabel8)
+                        .addGap(62, 62, 62))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(aggcaminolbl)
+                    .addComponent(caminominlbl)
+                    .addComponent(elimverlbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(ejecutarfwlbl)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(aggorigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(aggdestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(23, 23, 23))
+                    .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(origenfw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(destinofw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void imgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMouseClicked
-        int x = evt.getX();
-        int y = evt.getY();
-        int sw = 0;
-        for (Hitbox h : hitboxes) {
-            if (x < h.xmax && x > h.xmin && y < h.ymax && y > h.ymin) {
-                sw = 1;
+        if (fwsw == 0) {
+            int x = evt.getX();
+            int y = evt.getY();
+            int sw = 0;
+            for (Hitbox h : hitboxes) {
+                if (x < h.xmax && x > h.xmin && y < h.ymax && y > h.ymin) {
+                    sw = 1;
+                }
             }
-        }
-        if (sw == 0) {
-            Hitbox hb = new Hitbox(x - r, x + r, y - r, y + r);
-            String nom = JOptionPane.showInputDialog("Escriba el nombre del vertice");
-            if (nom != null && !nom.isEmpty()) {
-                hitboxes.add(hb);
-                Vertice v = new Vertice(nom, numver, hb, x, y);
-                vertices.add(v);
-                model.addElement(v);
-                model1.addElement(v);
-                f.Dibujar(g, vertices, aristas, r, fuente);
-                numver++;
+            if (sw == 0) {
+                Hitbox hb = new Hitbox(x - r, x + r, y - r, y + r);
+                String nom = JOptionPane.showInputDialog("Escriba el nombre del vertice");
+                if (nom != null && !nom.isEmpty()) {
+                    sw = 0;
+                    for (Vertice v : vertices) {
+                        if (v.nombre.equals(nom)) {
+                            sw = 1;
+                        }
+                    }
+                    if (sw == 0) {
+                        hitboxes.add(hb);
+                        Vertice v = new Vertice(nom, numver, hb, x, y);
+                        vertices.add(v);
+                        model.addElement(v);
+                        model1.addElement(v);
+                        model2.addElement(v);
+                        f.Dibujar(g, vertices, aristas, r, fuente);
+                        numver++;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Existe un vertice con ese nombre", "Erro", JOptionPane.WARNING_MESSAGE);
+
+                    }
+                }
             }
         }
     }//GEN-LAST:event_imgMouseClicked
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        Vertice origen = (Vertice) aggorigen.getSelectedItem();
-        Vertice destino = (Vertice) aggdestino.getSelectedItem();
-        int sw=0;
-        for (Arista ar : aristas) {
-            if (ar.destino.equals(destino) && ar.origen.equals(origen)) {
-                sw=1;
+    private void aggcaminolblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aggcaminolblMouseClicked
+        if (fwsw == 0) {
+            Vertice origen = (Vertice) aggorigen.getSelectedItem();
+            Vertice destino = (Vertice) aggdestino.getSelectedItem();
+            int sw = 0;
+            for (Arista ar : aristas) {
+                if (ar.destino.equals(destino) && ar.origen.equals(origen)) {
+                    sw = 1;
+                }
             }
-        }
-        if (!origen.equals(destino) && sw==0) {
-            String peso = JOptionPane.showInputDialog("Escriba el costo del camino");
-            if (peso != null && !peso.isEmpty()) {
-                int costo = Integer.parseInt(peso);
-                Arista a = new Arista((Vertice) aggorigen.getSelectedItem(), (Vertice) aggdestino.getSelectedItem(), costo);
-                aristas.add(a);
-                f.Dibujar(g, vertices, aristas, r, fuente);
-                f.Aggady(origen, a, vertices);
+            if (!origen.equals(destino) && sw == 0) {
+                String peso = JOptionPane.showInputDialog("Escriba el costo del camino");
+                if (peso != null && !peso.isEmpty()) {
+                    int costo = Integer.parseInt(peso);
+                    Arista a = new Arista((Vertice) aggorigen.getSelectedItem(), (Vertice) aggdestino.getSelectedItem(), costo);
+                    aristas.add(a);
+                    f.Dibujar(g, vertices, aristas, r, fuente);
+                    f.Aggady(origen, a, vertices);
+                }
             }
+    }//GEN-LAST:event_aggcaminolblMouseClicked
+    }
+    private void ejecutarfwlblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ejecutarfwlblMouseClicked
+        if (fwsw == 0) {
+            f.Matrizad(vertices, Matrizad, numver);
+            fwsw = 1;
+            for (Vertice v : vertices) {
+                model3.addElement(v);
+                model4.addElement(v);
+            }
+            fw.M = Matrizad;
+            fw.nVertices = numver;
+            fw.llenarMatrizDistancia();
+            fw.llenarMatrizRecorridos();
+            fw.algoritmoFloydWarshall();
         }
-    }//GEN-LAST:event_jLabel1MouseClicked
+    }//GEN-LAST:event_ejecutarfwlblMouseClicked
 
-    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        f.Matrizad(vertices, Matrizad, numver);
-        for (int i = 0; i < numver; i++) {
-            System.out.println();
-            for (int j = 0; j < numver; j++) {
-                System.out.print(Matrizad[i][j]+" , ");
+    private void elimverlblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_elimverlblMouseClicked
+        if(fwsw==0){
+        Vertice v = (Vertice) eliminar.getSelectedItem();
+        int sw = 0;
+        for (Vertice ve : vertices) {
+            if (sw == 1) {
+                ve.numero = ve.numero - 1;
+            }
+            if (ve.equals(v)) {
+                sw = 1;
             }
         }
-    }//GEN-LAST:event_jLabel2MouseClicked
+        for (Vertice vert : vertices) {
+            vert.listaady.clear();
+        }
+        for (Arista a : aristas) {
+            if (a.destino.equals(v)||a.origen.equals(v)) {
+                auxar.add(a);
+            }
+        }
+        for (Arista a : auxar) {
+            aristas.remove(a);
+        }
+        for (Arista ar : aristas) {
+            for (Vertice ve : vertices) {
+                if (ar.origen.nombre.equals(ve.nombre)) {
+                    ar.origen=ve;
+                }
+                if (ar.destino.nombre.equals(ve.nombre)) {
+                    ar.destino=ve;
+                }
+            }
+        }
+        for (Vertice ve : vertices) {
+            for (Arista a : aristas) {
+                if (a.origen.equals(ve)) {
+                    ve.listaady.add(a);
+                }
+            }
+        }
+        vertices.remove(v);
+        model2.removeAllElements();
+        model.removeAllElements();
+        model1.removeAllElements();
+        for (Vertice ver : vertices) {
+            model.addElement(ver);
+            model1.addElement(ver);
+            model2.addElement(ver);
+        }
+        numver--;
+        f.Dibujar(g, vertices, aristas, r, fuente);
+        }
+    }//GEN-LAST:event_elimverlblMouseClicked
+
+    private void caminominlblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_caminominlblMouseClicked
+        
+        Vertice a = (Vertice) origenfw.getSelectedItem();
+        Vertice b = (Vertice) destinofw.getSelectedItem();
+        JOptionPane.showMessageDialog(null, "El costo es:"+fw.distancia[a.numero][b.numero]);
+    }//GEN-LAST:event_caminominlblMouseClicked
 
     /**
      * @param args the command line arguments
@@ -226,10 +388,19 @@ public class Mapa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel aggcaminolbl;
     private javax.swing.JComboBox<Vertice> aggdestino;
     private javax.swing.JComboBox<Vertice> aggorigen;
+    private javax.swing.JLabel caminominlbl;
+    private javax.swing.JComboBox<Vertice> destinofw;
+    private javax.swing.JLabel ejecutarfwlbl;
+    private javax.swing.JComboBox<Vertice> eliminar;
+    private javax.swing.JLabel elimverlbl;
     private javax.swing.JPanel img;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JComboBox<Vertice> origenfw;
     // End of variables declaration//GEN-END:variables
 }
