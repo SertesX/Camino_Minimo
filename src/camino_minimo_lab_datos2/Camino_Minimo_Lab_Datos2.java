@@ -15,7 +15,10 @@ public class Camino_Minimo_Lab_Datos2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        Mapa m = new Mapa();
+        m.setVisible(true);
+        m.setLocationRelativeTo(null);
     }
     
 }
