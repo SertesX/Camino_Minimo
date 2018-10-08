@@ -15,4 +15,19 @@ public class Vertice {
     String nombre;
     ArrayList listaady = new ArrayList();
     Hitbox hitbox;
+    int numero;
+    int x;
+    int y;
+    
+    public Vertice(String nom,int num, Hitbox hb, int xx, int yy){
+        nombre=nom;
+        hitbox=hb;
+        numero=num;
+        x=xx;
+        y=yy;
+    }
+    
+    @Override public String toString(){
+        return nombre;
+    }
 }
