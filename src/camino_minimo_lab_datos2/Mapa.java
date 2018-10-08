@@ -181,6 +181,12 @@ public class Mapa extends javax.swing.JFrame {
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         f.Matrizad(vertices, Matrizad, numver);
+        for (int i = 0; i < numver; i++) {
+            System.out.println();
+            for (int j = 0; j < numver; j++) {
+                System.out.print(Matrizad[i][j]+" , ");
+            }
+        }
     }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
