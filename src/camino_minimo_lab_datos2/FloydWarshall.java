@@ -5,6 +5,8 @@
  */
 package camino_minimo_lab_datos2;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ESTU-5K
@@ -14,12 +16,17 @@ public class FloydWarshall {
     int[][] M;
     int nVertices;
     int[][] distancia = new int[999][999];
-    int[][] recorridos = new int[999][999];
+    Vertice[][] recorridos = new Vertice[999][999];
 
-    void llenarMatrizRecorridos() {
+    void llenarMatrizRecorridos(ArrayList<Vertice> v) {
         for (int i = 0; i < nVertices; i++) {
             for (int j = 0; j < nVertices; j++) {
-                recorridos[i][j] = j;
+                for (Vertice vertice : v) {
+                    if (j== vertice.numero){
+                        recorridos[i][j] = vertice;
+                    }
+                }
+                
             }
         }
     }

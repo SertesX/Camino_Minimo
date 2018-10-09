@@ -71,18 +71,18 @@ public class Funciones {
         }
     }
     
-    public ArrayList Camino(int[][] M,int origen,int destino){
+    public ArrayList Camino(Vertice[][] M,Vertice origen,Vertice destino){
         ArrayList aux = new ArrayList();
-        if(M[origen][destino] == destino){
+        if(M[origen.numero][origen.numero] == destino){
             return null;
         }
-        if(M[origen][destino] == origen){
+        if(M[origen.numero][destino.numero] == origen){
             aux.add(destino);
             aux.add(origen);
         }else{
-            while(M[origen][destino]!=origen){
-                aux.add(M[origen][destino]);
-                destino=M[origen][destino];
+            while(M[origen.numero][destino.numero]!=origen){
+                aux.add(M[origen.numero][destino.numero]);
+                destino=M[origen.numero][destino.numero];
             }
         }
         return aux;

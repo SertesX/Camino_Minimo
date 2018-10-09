@@ -26,7 +26,7 @@ public class Mapa extends javax.swing.JFrame {
     ArrayList<Hitbox> hitboxes = new ArrayList();
     ArrayList<Arista> aristas = new ArrayList();
     ArrayList<Arista> auxar = new ArrayList();
-    ArrayList aux = new ArrayList();
+    ArrayList<Vertice> aux = new ArrayList();
     DefaultComboBoxModel<Vertice> model = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model1 = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model2 = new DefaultComboBoxModel();
@@ -284,13 +284,19 @@ public class Mapa extends javax.swing.JFrame {
             }
             fw.M = Matrizad;
             fw.nVertices = numver;
-            fw.llenarMatrizRecorridos();
+            fw.llenarMatrizRecorridos(vertices);
+            for (int i = 0; i < numver; i++) {
+                System.out.println("");
+                for (int j = 0; j < numver; j++) {
+                    System.out.print(fw.recorridos[i][j].numero);
+                }
+            }
             fw.llenarMatrizDistancia();
             fw.algoritmoFloydWarshall();
             for (int i = 0; i < numver; i++) {
                 System.out.println("");
                 for (int j = 0; j < numver; j++) {
-                    System.out.print(fw.recorridos[i][j]);
+                    System.out.print(fw.recorridos[i][j].numero);
                 }
             }
             for (int i = 0; i < numver; i++) {
@@ -364,7 +370,7 @@ public class Mapa extends javax.swing.JFrame {
             Vertice b = (Vertice) destinofw.getSelectedItem();
             JOptionPane.showMessageDialog(null, "El costo es de: " + fw.distancia[a.numero][b.numero]);
             
-            aux = f.Camino(fw.recorridos, a.numero, b.numero);
+            aux = f.Camino(fw.recorridos, a, b);
             for (Object x : aux) {
                 System.out.println(x);
             }
