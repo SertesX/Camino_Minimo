@@ -46,7 +46,7 @@ public class FloydWarshall {
         }
     }
 
-    static void algoritmoFloydWarshall() {
+    static void algoritmoFloydWarshall(ArrayList<Vertice> v) {
         int tmp;
         for (int k = 0; k < nVertices; k++) {
             for (int i = 0; i < nVertices; i++) {
@@ -60,6 +60,7 @@ public class FloydWarshall {
             }
         }
     }
+    
     public ArrayList Camino(Vertice origen,Vertice destino){
         ArrayList aux = new ArrayList();
         if(recorridos[origen.numero][origen.numero] == destino){

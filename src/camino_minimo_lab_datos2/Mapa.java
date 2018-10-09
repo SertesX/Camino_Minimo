@@ -285,26 +285,20 @@ public class Mapa extends javax.swing.JFrame {
             fw.M = Matrizad;
             fw.nVertices = numver;
             fw.llenarMatrizRecorridos(vertices);
-            for (int i = 0; i < numver; i++) {
-                System.out.println("");
-                for (int j = 0; j < numver; j++) {
-                    System.out.print(fw.recorridos[i][j].numero);
-                }
-            }
             fw.llenarMatrizDistancia();
-            fw.algoritmoFloydWarshall();
-            for (int i = 0; i < numver; i++) {
-                System.out.println("");
-                for (int j = 0; j < numver; j++) {
-                    System.out.print(fw.recorridos[i][j].numero);
-                }
-            }
-            for (int i = 0; i < numver; i++) {
-                System.out.println("");
-                for (int j = 0; j < numver; j++) {
-                    System.out.print(fw.distancia[i][j]);
-                }
-            }
+            fw.algoritmoFloydWarshall(vertices);
+//            for (int i = 0; i < numver; i++) {
+//                System.out.println("");
+//                for (int j = 0; j < numver; j++) {
+//                    System.out.print(fw.recorridos[i][j].numero);
+//                }
+//            }
+//            for (int i = 0; i < numver; i++) {
+//                System.out.println("");
+//                for (int j = 0; j < numver; j++) {
+//                    System.out.print(fw.distancia[i][j]);
+//                }
+//            }
         }
     }//GEN-LAST:event_ejecutarfwlblMouseClicked
 
@@ -369,11 +363,7 @@ public class Mapa extends javax.swing.JFrame {
             Vertice a = (Vertice) origenfw.getSelectedItem();
             Vertice b = (Vertice) destinofw.getSelectedItem();
             JOptionPane.showMessageDialog(null, "El costo es de: " + fw.distancia[a.numero][b.numero]);
-            
-            aux = fw.Camino(a, b);
-            for (Object x : aux) {
-                System.out.println(x);
-            }
+//            aux = fw.Camino(a, b);
         }
     }//GEN-LAST:event_caminominlblMouseClicked
 
