@@ -262,7 +262,7 @@ public class Mapa extends javax.swing.JFrame {
                     sw = 1;
                 }
             }
-            if (!origen.equals(destino) && sw == 0) {
+            if (origen != null && !origen.equals(destino) && sw == 0) {
                 String peso = JOptionPane.showInputDialog("Escriba el costo del camino");
                 if (peso != null && !peso.isEmpty()) {
                     int costo = Integer.parseInt(peso);
@@ -370,7 +370,7 @@ public class Mapa extends javax.swing.JFrame {
             Vertice b = (Vertice) destinofw.getSelectedItem();
             JOptionPane.showMessageDialog(null, "El costo es de: " + fw.distancia[a.numero][b.numero]);
             
-            aux = f.Camino(fw.recorridos, a, b);
+            aux = fw.Camino(a, b);
             for (Object x : aux) {
                 System.out.println(x);
             }

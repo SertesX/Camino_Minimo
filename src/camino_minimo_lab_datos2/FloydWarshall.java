@@ -13,12 +13,12 @@ import java.util.ArrayList;
  */
 public class FloydWarshall {
 
-    int[][] M;
-    int nVertices;
-    int[][] distancia = new int[999][999];
-    Vertice[][] recorridos = new Vertice[999][999];
+    static int[][] M;
+    static int nVertices;
+    static int[][] distancia = new int[999][999];
+    static Vertice[][] recorridos = new Vertice[999][999];
 
-    void llenarMatrizRecorridos(ArrayList<Vertice> v) {
+    static void llenarMatrizRecorridos(ArrayList<Vertice> v) {
         for (int i = 0; i < nVertices; i++) {
             for (int j = 0; j < nVertices; j++) {
                 for (Vertice vertice : v) {
@@ -31,7 +31,7 @@ public class FloydWarshall {
         }
     }
 
-    void llenarMatrizDistancia() {
+    static void llenarMatrizDistancia() {
         int infinito = 999;
         for (int i = 0; i < nVertices; i++) {
             for (int j = 0; j < nVertices; j++) {
@@ -46,7 +46,7 @@ public class FloydWarshall {
         }
     }
 
-    void algoritmoFloydWarshall() {
+    static void algoritmoFloydWarshall() {
         int tmp;
         for (int k = 0; k < nVertices; k++) {
             for (int i = 0; i < nVertices; i++) {
@@ -59,5 +59,21 @@ public class FloydWarshall {
                 }
             }
         }
+    }
+    public ArrayList Camino(Vertice origen,Vertice destino){
+        ArrayList aux = new ArrayList();
+        if(recorridos[origen.numero][origen.numero] == destino){
+            return null;
+        }
+        if(recorridos[origen.numero][destino.numero] == origen){
+            aux.add(destino);
+            aux.add(origen);
+        }else{
+            while(recorridos[origen.numero][destino.numero]!=origen){
+                aux.add(recorridos[origen.numero][destino.numero]);
+                destino=recorridos[origen.numero][destino.numero];
+            }
+        }
+        return aux;
     }
 }
