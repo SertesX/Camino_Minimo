@@ -41,10 +41,11 @@ public class Funciones {
             g.fillOval(v.x - (r / 2), v.y - (r / 2), r, r);
             g.setColor(Color.black);
             g.drawOval(v.x - (r / 2), v.y - (r / 2), r, r);
-//            g.setColor(Color.white);
-            g.drawRect(v.x-largostring/2-2, v.y+15, largostring+6, 20);
+            g.setColor(Color.white);
+            g.fillRect(v.x-largostring/2-4, v.y+15, largostring+6, 20);
             g.setColor(Color.black);
-            g.drawString(v.nombre, v.x-largostring/2+2, v.y+30);
+            g.drawRect(v.x-largostring/2-4, v.y+15, largostring+6, 20);
+            g.drawString(v.nombre, v.x-largostring/2, v.y+30);
         }
     }
     
@@ -70,5 +71,20 @@ public class Funciones {
         }
     }
     
-    
+    public ArrayList Camino(int[][] M,int origen,int destino){
+        ArrayList aux = new ArrayList();
+        if(M[origen][destino] == destino){
+            return null;
+        }
+        if(M[origen][destino] == origen){
+            aux.add(destino);
+            aux.add(origen);
+        }else{
+            while(M[origen][destino]!=origen){
+                aux.add(M[origen][destino]);
+                destino=M[origen][destino];
+            }
+        }
+        return aux;
+    }
 }

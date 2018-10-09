@@ -5,7 +5,6 @@
  */
 package camino_minimo_lab_datos2;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -27,6 +26,7 @@ public class Mapa extends javax.swing.JFrame {
     ArrayList<Hitbox> hitboxes = new ArrayList();
     ArrayList<Arista> aristas = new ArrayList();
     ArrayList<Arista> auxar = new ArrayList();
+    ArrayList aux = new ArrayList();
     DefaultComboBoxModel<Vertice> model = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model1 = new DefaultComboBoxModel();
     DefaultComboBoxModel<Vertice> model2 = new DefaultComboBoxModel();
@@ -284,71 +284,91 @@ public class Mapa extends javax.swing.JFrame {
             }
             fw.M = Matrizad;
             fw.nVertices = numver;
-            fw.llenarMatrizDistancia();
             fw.llenarMatrizRecorridos();
+            fw.llenarMatrizDistancia();
             fw.algoritmoFloydWarshall();
+            for (int i = 0; i < numver; i++) {
+                System.out.println("");
+                for (int j = 0; j < numver; j++) {
+                    System.out.print(fw.recorridos[i][j]);
+                }
+            }
+            for (int i = 0; i < numver; i++) {
+                System.out.println("");
+                for (int j = 0; j < numver; j++) {
+                    System.out.print(fw.distancia[i][j]);
+                }
+            }
         }
     }//GEN-LAST:event_ejecutarfwlblMouseClicked
 
     private void elimverlblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_elimverlblMouseClicked
-        if(fwsw==0){
-        Vertice v = (Vertice) eliminar.getSelectedItem();
-        int sw = 0;
-        for (Vertice ve : vertices) {
-            if (sw == 1) {
-                ve.numero = ve.numero - 1;
-            }
-            if (ve.equals(v)) {
-                sw = 1;
-            }
-        }
-        for (Vertice vert : vertices) {
-            vert.listaady.clear();
-        }
-        for (Arista a : aristas) {
-            if (a.destino.equals(v)||a.origen.equals(v)) {
-                auxar.add(a);
-            }
-        }
-        for (Arista a : auxar) {
-            aristas.remove(a);
-        }
-        for (Arista ar : aristas) {
+        if (fwsw == 0) {
+            auxar.clear();
+            Vertice v = (Vertice) eliminar.getSelectedItem();
+            int sw = 0;
             for (Vertice ve : vertices) {
-                if (ar.origen.nombre.equals(ve.nombre)) {
-                    ar.origen=ve;
+                if (sw == 1) {
+                    ve.numero = ve.numero - 1;
                 }
-                if (ar.destino.nombre.equals(ve.nombre)) {
-                    ar.destino=ve;
+                if (ve.equals(v)) {
+                    sw = 1;
                 }
             }
-        }
-        for (Vertice ve : vertices) {
+            for (Vertice vert : vertices) {
+                vert.listaady.clear();
+            }
             for (Arista a : aristas) {
-                if (a.origen.equals(ve)) {
-                    ve.listaady.add(a);
+                if (a.destino.equals(v) || a.origen.equals(v)) {
+                    auxar.add(a);
                 }
             }
-        }
-        vertices.remove(v);
-        model2.removeAllElements();
-        model.removeAllElements();
-        model1.removeAllElements();
-        for (Vertice ver : vertices) {
-            model.addElement(ver);
-            model1.addElement(ver);
-            model2.addElement(ver);
-        }
-        numver--;
-        f.Dibujar(g, vertices, aristas, r, fuente);
+            for (Arista a : auxar) {
+                aristas.remove(a);
+            }
+            for (Arista ar : aristas) {
+                for (Vertice ve : vertices) {
+                    if (ar.origen.nombre.equals(ve.nombre)) {
+                        ar.origen = ve;
+                    }
+                    if (ar.destino.nombre.equals(ve.nombre)) {
+                        ar.destino = ve;
+                    }
+                }
+            }
+            for (Vertice ve : vertices) {
+                for (Arista a : aristas) {
+                    if (a.origen.equals(ve)) {
+                        ve.listaady.add(a);
+                    }
+                }
+            }
+            vertices.remove(v);
+            model2.removeAllElements();
+            model.removeAllElements();
+            model1.removeAllElements();
+            for (Vertice ver : vertices) {
+                model.addElement(ver);
+                model1.addElement(ver);
+                model2.addElement(ver);
+            }
+            numver--;
+            f.Dibujar(g, vertices, aristas, r, fuente);
         }
     }//GEN-LAST:event_elimverlblMouseClicked
 
     private void caminominlblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_caminominlblMouseClicked
-        
-        Vertice a = (Vertice) origenfw.getSelectedItem();
-        Vertice b = (Vertice) destinofw.getSelectedItem();
-        JOptionPane.showMessageDialog(null, "El costo es:"+fw.distancia[a.numero][b.numero]);
+        if (fwsw == 1) {
+            aux.clear();
+            Vertice a = (Vertice) origenfw.getSelectedItem();
+            Vertice b = (Vertice) destinofw.getSelectedItem();
+            JOptionPane.showMessageDialog(null, "El costo es de: " + fw.distancia[a.numero][b.numero]);
+            
+            aux = f.Camino(fw.recorridos, a.numero, b.numero);
+            for (Object x : aux) {
+                System.out.println(x);
+            }
+        }
     }//GEN-LAST:event_caminominlblMouseClicked
 
     /**
